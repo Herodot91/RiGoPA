@@ -1,0 +1,5 @@
+{
+  "name": "RiGoPA-Risk Governance for Public Administration",
+  "description": "A frontend interface for Contract Risk Analysis, simulating the backend logic and enhancing it with Gemini AI for intelligent clause auditing and risk explanation.",
+  "requestFramePermissions": []
+}
