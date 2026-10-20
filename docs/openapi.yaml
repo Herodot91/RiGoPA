@@ -1,0 +1,291 @@
+openapi: 3.0.3
+info:
+  title: RiGoPA API
+  version: 1.0.0
+  description: |
+    Read-only REST API behind RiGoPA (Risk Governance for Public Administration), a prototype
+    that checks public-sector contracts for risk. All data is sample data.
+
+    **How it is served:** each resource is a JSON file under `public/api/v1/`, published
+    next to the app on GitHub Pages. That is why paths end in `.json` and why only `GET` exists.
+    Contracts that a user adds or edits in the app are kept in that browser only (local storage).
+    Nothing is written back.
+
+    **Risk scores:** the contract `riskAnalysis` in this seed data is pre-computed. The app
+    recalculates the score with its own rules (`services/riskEngine.ts`) when a contract is created or edited.
+
+    **Standards:** this file is checked by `.spectral.yaml` and every JSON file is checked against
+    its schema by `tools/contract-test.mjs`, both in GitHub Actions.
+  contact:
+    name: Constantin Plămădeală
+    url: https://github.com/Herodot91
+servers:
+  - url: https://herodot91.github.io/RiGoPA
+    description: GitHub Pages
+  - url: http://localhost:3000
+    description: Local development (npm run dev)
+tags:
+  - name: contracts
+    description: The contract register, with risk analysis, policy checks and audit trail
+  - name: risks
+    description: Risks of implementing the system itself
+paths:
+  /api/v1/contracts.json:
+    get:
+      tags: [contracts]
+      operationId: listContracts
+      summary: List contracts
+      description: All contracts in the register, each with its risk analysis, policy checks, decentralization steps and audit log.
+      responses:
+        '200':
+          description: All contracts.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Contract'
+              example:
+                - id: '2'
+                  title: Town Hall Office Supplies Procurement
+                  type: PO
+                  status: Active
+                  value: 25000
+                  startDate: '2025-07-01'
+                  endDate: '2025-12-01'
+                  clauses: [standard format, net 30, delivery to town hall]
+                  riskAnalysis:
+                    score: 0
+                    reasons: []
+                  auditLog:
+                    - id: log-1
+                      date: '2025-06-01 10:00'
+                      action: Contract Drafted
+                      user: System Import
+                      version: 1
+                  policyChecks:
+                    - id: pol-1
+                      policyName: Delegation of Authority
+                      status: compliant
+                      details: Within standard limits.
+                  decentralizationSteps:
+                    - id: good-data
+                      label: Good Data
+                      status: Pass
+                      description: Structured data is complete.
+                  version: 1
+                  previousVersions: []
+  /api/v1/system-risks.json:
+    get:
+      tags: [risks]
+      operationId: listSystemRisks
+      summary: List system implementation risks
+      description: The risk register for rolling out RiGoPA itself, with likelihood, impact, score and mitigation.
+      responses:
+        '200':
+          description: All system risks.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SystemRisk'
+              example:
+                - id: sys-risk-0
+                  category: Data Migration Errors
+                  description: Contracts uploaded with missing deadlines or metadata.
+                  likelihood: 3
+                  impact: 4
+                  mitigation: Run double-checks, use automated data validation scripts.
+                  score: 12
+                  level: Medium
+components:
+  schemas:
+    Contract:
+      type: object
+      required: [id, title, type, status, value, startDate, endDate, clauses, auditLog, version]
+      properties:
+        id:
+          type: string
+          description: Contract identifier.
+        title:
+          type: string
+          description: Contract title.
+        type:
+          type: string
+          description: Kind of contract.
+          enum: [SOW, PO, MSA, NDA, Licensing, Service Agreement, TPH]
+        status:
+          type: string
+          description: Stage of the contract.
+          enum: [Draft, Legal Review, Pending Approval, Active, Completed, Terminated]
+        value:
+          type: number
+          description: Contract value.
+          minimum: 0
+        startDate:
+          type: string
+          format: date
+          description: Start date. Sample data can contain a start date after the end date, on purpose, to trigger a risk flag.
+        endDate:
+          type: string
+          format: date
+          description: End date.
+        clauses:
+          type: array
+          description: Clauses present in the contract, as short phrases.
+          items:
+            type: string
+        riskAnalysis:
+          description: Risk score and the reasons behind it.
+          allOf:
+            - $ref: '#/components/schemas/RiskAnalysis'
+        auditLog:
+          type: array
+          description: What happened to the contract, in order.
+          items:
+            $ref: '#/components/schemas/AuditLogEntry'
+        policyChecks:
+          type: array
+          description: Results of the policy checks.
+          items:
+            $ref: '#/components/schemas/PolicyCheck'
+        decentralizationSteps:
+          type: array
+          description: Result for each of the four pillars of the decentralization formula.
+          items:
+            $ref: '#/components/schemas/DecentralizationStep'
+        version:
+          type: integer
+          description: Current version number.
+          minimum: 1
+        previousVersions:
+          type: array
+          description: Earlier versions of the contract.
+          items:
+            $ref: '#/components/schemas/ContractVersionSnapshot'
+    RiskAnalysis:
+      type: object
+      required: [score, reasons]
+      properties:
+        score:
+          type: integer
+          description: Risk score. 0 is no risk found. The app shows 50 and above as high risk.
+          minimum: 0
+        reasons:
+          type: array
+          description: Why the score is what it is.
+          items:
+            type: string
+        aiAnalysis:
+          type: string
+          description: Short written assessment. In the seed data it is pre-written text, not a live Gemini answer.
+    AuditLogEntry:
+      type: object
+      required: [id, date, action, user]
+      properties:
+        id:
+          type: string
+          description: Log entry identifier.
+        date:
+          type: string
+          description: Date and time, as text (for example 2025-06-01 10:00).
+        action:
+          type: string
+          description: What was done.
+        user:
+          type: string
+          description: Who or what did it.
+        details:
+          type: string
+          description: More detail about the action.
+        version:
+          type: integer
+          description: Contract version the action applies to.
+    PolicyCheck:
+      type: object
+      required: [id, policyName, status, details]
+      properties:
+        id:
+          type: string
+          description: Policy check identifier.
+        policyName:
+          type: string
+          description: Name of the policy.
+        status:
+          type: string
+          description: Result of the check.
+          enum: [compliant, violation, warning]
+        details:
+          type: string
+          description: Explanation of the result.
+    DecentralizationStep:
+      type: object
+      required: [id, label, status, description]
+      properties:
+        id:
+          type: string
+          description: Which pillar this is.
+          enum: [good-data, early-warnings, portable-clarity, decentralized-checks]
+        label:
+          type: string
+          description: Display name of the pillar.
+        status:
+          type: string
+          description: Result for this pillar.
+          enum: [Pass, Flagged, Pending]
+        description:
+          type: string
+          description: Explanation of the result.
+    ContractVersionSnapshot:
+      type: object
+      required: [version, timestamp, data, reason]
+      properties:
+        version:
+          type: integer
+          description: Version number that was saved.
+        timestamp:
+          type: string
+          description: When the version was saved.
+        data:
+          description: The full contract as it was in that version.
+          allOf:
+            - $ref: '#/components/schemas/Contract'
+        reason:
+          type: string
+          description: Why a new version was created.
+    SystemRisk:
+      type: object
+      required: [id, category, description, likelihood, impact, mitigation, score, level]
+      properties:
+        id:
+          type: string
+          description: Risk identifier.
+        category:
+          type: string
+          description: Risk category.
+        description:
+          type: string
+          description: What could go wrong.
+        likelihood:
+          type: integer
+          description: How likely it is, from 1 (rare) to 5 (almost certain).
+          minimum: 1
+          maximum: 5
+        impact:
+          type: integer
+          description: How bad it would be, from 1 (minor) to 5 (severe).
+          minimum: 1
+          maximum: 5
+        mitigation:
+          type: string
+          description: What is done to reduce the risk.
+        score:
+          type: integer
+          description: Likelihood multiplied by impact.
+          minimum: 1
+          maximum: 25
+        level:
+          type: string
+          description: High for a score of 15 or more, Medium for 8 to 14, Low below 8.
+          enum: [High, Medium, Low]
