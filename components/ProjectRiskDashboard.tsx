@@ -3,72 +3,7 @@ import { SystemRisk } from '../types';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, ScatterChart, Scatter, ZAxis } from 'recharts';
 import { Activity, CheckCircle2, HelpCircle, Info } from 'lucide-react';
 
-// Hardcoded data from the Python script
-const RAW_RISKS = [
-  {
-    category: "Data Migration Errors",
-    description: "Contracts uploaded with missing deadlines or metadata.",
-    likelihood: 3, impact: 4,
-    mitigation: "Run double-checks, use automated data validation scripts."
-  },
-  {
-    category: "User Adoption Resistance",
-    description: "Staff may prefer manual processes.",
-    likelihood: 4, impact: 3,
-    mitigation: "Training, clear guidelines, change-management incentives."
-  },
-  {
-    category: "Legal/Compliance Oversight",
-    description: "Some clauses not mapped correctly by compliance engine.",
-    likelihood: 2, impact: 5,
-    mitigation: "Regular updates with national/EU legal databases."
-  },
-  {
-    category: "Cybersecurity Breach",
-    description: "Sensitive contracts exposed.",
-    likelihood: 2, impact: 5,
-    mitigation: "Encrypt uploads, strong RBAC, MFA, logging & monitoring."
-  },
-  {
-    category: "Vendor Pushback",
-    description: "Contractors resist new transparency.",
-    likelihood: 3, impact: 3,
-    mitigation: "Educate vendors; provide onboarding support & documentation."
-  },
-  {
-    category: "System Downtime",
-    description: "Delays in dashboards during council sessions.",
-    likelihood: 2, impact: 4,
-    mitigation: "Redundancy, uptime SLO/SLA, failover & backups."
-  },
-  {
-    category: "Audit Inconsistencies",
-    description: "Departments fail to log touch points.",
-    likelihood: 3, impact: 3,
-    mitigation: "Make logging mandatory; automated reminders & checks."
-  },
-  {
-    category: "Budget Overrun (Platform Costs)",
-    description: "Unexpected license/maintenance costs.",
-    likelihood: 2, impact: 3,
-    mitigation: "Negotiate fixed annual contracts; track TCO vs. benefits."
-  },
-];
-
-// Process data to match SystemRisk interface
-const SYSTEM_RISKS: SystemRisk[] = RAW_RISKS.map((r, i) => {
-  const score = r.likelihood * r.impact;
-  let level: 'High' | 'Medium' | 'Low' = 'Low';
-  if (score >= 15) level = 'High';
-  else if (score >= 8) level = 'Medium';
-  
-  return {
-    id: `sys-risk-${i}`,
-    ...r,
-    score,
-    level
-  };
-});
+// The risk register comes from the API (GET /api/v1/system-risks.json) and is passed in as a prop.
 
 const RiskMatrix = ({ risks }: { risks: SystemRisk[] }) => {
   // Generate 5x5 grid data
@@ -153,7 +88,11 @@ const RiskMatrix = ({ risks }: { risks: SystemRisk[] }) => {
   );
 };
 
-const ProjectRiskDashboard: React.FC = () => {
+interface ProjectRiskDashboardProps {
+  risks: SystemRisk[]; // from GET /api/v1/system-risks.json
+}
+
+const ProjectRiskDashboard: React.FC<ProjectRiskDashboardProps> = ({ risks: SYSTEM_RISKS }) => {
   const sortedRisks = [...SYSTEM_RISKS].sort((a, b) => b.score - a.score);
   
   const highRiskCount = SYSTEM_RISKS.filter(r => r.level === 'High').length;
