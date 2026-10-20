@@ -1,0 +1,82 @@
+[
+  {
+    "id": "sys-risk-0",
+    "category": "Data Migration Errors",
+    "description": "Contracts uploaded with missing deadlines or metadata.",
+    "likelihood": 3,
+    "impact": 4,
+    "mitigation": "Run double-checks, use automated data validation scripts.",
+    "score": 12,
+    "level": "Medium"
+  },
+  {
+    "id": "sys-risk-1",
+    "category": "User Adoption Resistance",
+    "description": "Staff may prefer manual processes.",
+    "likelihood": 4,
+    "impact": 3,
+    "mitigation": "Training, clear guidelines, change-management incentives.",
+    "score": 12,
+    "level": "Medium"
+  },
+  {
+    "id": "sys-risk-2",
+    "category": "Legal/Compliance Oversight",
+    "description": "Some clauses not mapped correctly by compliance engine.",
+    "likelihood": 2,
+    "impact": 5,
+    "mitigation": "Regular updates with national/EU legal databases.",
+    "score": 10,
+    "level": "Medium"
+  },
+  {
+    "id": "sys-risk-3",
+    "category": "Cybersecurity Breach",
+    "description": "Sensitive contracts exposed.",
+    "likelihood": 2,
+    "impact": 5,
+    "mitigation": "Encrypt uploads, strong RBAC, MFA, logging & monitoring.",
+    "score": 10,
+    "level": "Medium"
+  },
+  {
+    "id": "sys-risk-4",
+    "category": "Vendor Pushback",
+    "description": "Contractors resist new transparency.",
+    "likelihood": 3,
+    "impact": 3,
+    "mitigation": "Educate vendors; provide onboarding support & documentation.",
+    "score": 9,
+    "level": "Medium"
+  },
+  {
+    "id": "sys-risk-5",
+    "category": "System Downtime",
+    "description": "Delays in dashboards during council sessions.",
+    "likelihood": 2,
+    "impact": 4,
+    "mitigation": "Redundancy, uptime SLO/SLA, failover & backups.",
+    "score": 8,
+    "level": "Medium"
+  },
+  {
+    "id": "sys-risk-6",
+    "category": "Audit Inconsistencies",
+    "description": "Departments fail to log touch points.",
+    "likelihood": 3,
+    "impact": 3,
+    "mitigation": "Make logging mandatory; automated reminders & checks.",
+    "score": 9,
+    "level": "Medium"
+  },
+  {
+    "id": "sys-risk-7",
+    "category": "Budget Overrun (Platform Costs)",
+    "description": "Unexpected license/maintenance costs.",
+    "likelihood": 2,
+    "impact": 3,
+    "mitigation": "Negotiate fixed annual contracts; track TCO vs. benefits.",
+    "score": 6,
+    "level": "Low"
+  }
+]
