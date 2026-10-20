@@ -11,165 +11,8 @@ import DecentralizationFormula from './components/DecentralizationFormula';
 import CivicTechDashboard from './components/CivicTechDashboard';
 import { LayoutDashboard, PlusCircle, FileText, AlertTriangle, ChevronRight, BrainCircuit, ArrowUpDown, ArrowUp, ArrowDown, History, CheckCircle2, XCircle, AlertCircle, Clock, Upload, Loader2, X, Filter, ListTodo, ShieldAlert, Activity, Network, Database, Layers, Edit2, RotateCcw, FileCode, ShoppingBag, BookOpen, Shield, Key, Briefcase, Users, RefreshCw, Sparkles } from 'lucide-react';
 
-// Initial data from the user's JSON provided in the prompt, enriched with new fields
-const INITIAL_DATA: Contract[] = [
-  {
-    id: '1',
-    title: "IT Infrastructure Upgrade",
-    type: 'SOW',
-    status: 'Legal Review',
-    value: 150000,
-    startDate: "2025-09-01",
-    endDate: "2025-08-01",
-    clauses: ["manual modifications", "no termination clause"],
-    riskAnalysis: {
-      score: 75,
-      reasons: ["High contract value", "Missing termination clause", "Manual contract edits detected", "Start date after end date"],
-      aiAnalysis: "The dates are invalid (Start > End). Combined with missing termination clauses and high value, this poses a severe operational risk."
-    },
-    auditLog: [
-      { id: 'log-1', date: '2025-05-10 09:00', action: 'Contract Drafted', user: 'System Import', version: 1 },
-      { id: 'log-2', date: '2025-05-10 09:05', action: 'Early Risk Check', user: 'RiskEngine v1', details: 'Risk score calculated at 75 (High).', version: 1 },
-      { id: 'log-3', date: '2025-05-10 14:20', action: 'DoD Check Failed', user: 'Compliance Bot', details: 'Delegation of Authority policy violation detected.', version: 1 }
-    ],
-    policyChecks: [
-       { id: 'pol-1', policyName: 'Delegation of Authority', status: 'warning', details: 'Value > $50k requires VP Approval.' },
-       { id: 'pol-2', policyName: 'GDPR & Data Privacy', status: 'violation', details: 'Missing Data Processing Addendum in SOW.' }
-    ],
-    decentralizationSteps: [
-       { id: 'good-data', label: 'Good Data', status: 'Pass', description: 'Structured data is complete and accessible.' },
-       { id: 'early-warnings', label: 'Early Warnings', status: 'Flagged', description: 'System detected High Risk (75). Local alert active.' },
-       { id: 'portable-clarity', label: 'Portable Clarity', status: 'Flagged', description: 'Custom language detected. Manual review required.' },
-       { id: 'decentralized-checks', label: 'Decentralized Checks', status: 'Flagged', description: '1 blocking policy violation detected.' }
-    ],
-    version: 1,
-    previousVersions: []
-  },
-  {
-    id: '2',
-    title: "Town Hall Office Supplies Procurement",
-    type: 'PO',
-    status: 'Active',
-    value: 25000,
-    startDate: "2025-07-01",
-    endDate: "2025-12-01",
-    clauses: ["standard format", "net 30", "delivery to town hall"],
-    riskAnalysis: {
-      score: 0,
-      reasons: [],
-      aiAnalysis: "Low risk standard procurement contract for municipal administration."
-    },
-    auditLog: [
-       { id: 'log-1', date: '2025-06-01 10:00', action: 'Contract Drafted', user: 'System Import', version: 1 },
-       { id: 'log-2', date: '2025-06-01 10:01', action: 'DoD Check Passed', user: 'PolicyEngine', details: 'All automated checks passed successfully.', version: 1 }
-    ],
-    policyChecks: [
-       { id: 'pol-1', policyName: 'Delegation of Authority', status: 'compliant', details: 'Within standard limits.' },
-       { id: 'pol-2', policyName: 'Standard Payment Terms', status: 'compliant', details: 'Net 30 terms present.' }
-    ],
-    decentralizationSteps: [
-        { id: 'good-data', label: 'Good Data', status: 'Pass', description: 'Structured data is complete.' },
-        { id: 'early-warnings', label: 'Early Warnings', status: 'Pass', description: 'Risk analysis active. No thresholds breached.' },
-        { id: 'portable-clarity', label: 'Portable Clarity', status: 'Pass', description: 'Standard templates used.' },
-        { id: 'decentralized-checks', label: 'Decentralized Checks', status: 'Pass', description: 'All local checks passed.' }
-    ],
-    version: 1,
-    previousVersions: []
-  },
-  {
-    id: '3',
-    title: "Main Avenue Resurfacing & Bike Lanes",
-    type: 'SOW',
-    status: 'Pending Approval',
-    value: 1200000,
-    startDate: "2026-03-01",
-    endDate: "2026-09-30",
-    clauses: ["standard liability", "milestone payments", "weather contingency", "public safety protocols"],
-    riskAnalysis: {
-        score: 35,
-        reasons: ["High contract value", "Weather dependency"],
-        aiAnalysis: "Moderate risk due to high value and external factors (weather). Standard terms present, but public disruption requires communication plan."
-    },
-    auditLog: [
-        { id: 'log-1', date: '2025-08-15 08:30', action: 'Contract Drafted', user: 'Public Works', version: 1 },
-        { id: 'log-2', date: '2025-08-15 08:35', action: 'Early Risk Check', user: 'RiskEngine', details: 'Risk Score: 35 (Medium)', version: 1 }
-    ],
-    policyChecks: [
-        { id: 'pol-1', policyName: 'Delegation of Authority', status: 'warning', details: 'Value > $1M requires City Council Vote.' },
-        { id: 'pol-3', policyName: 'Standard Payment Terms', status: 'compliant', details: 'Milestone payments defined.' }
-    ],
-    decentralizationSteps: [
-        { id: 'good-data', label: 'Good Data', status: 'Pass', description: 'Structured data is complete.' },
-        { id: 'early-warnings', label: 'Early Warnings', status: 'Pass', description: 'Medium risk identified, within tolerance.' },
-        { id: 'portable-clarity', label: 'Portable Clarity', status: 'Pass', description: 'Standard Public Works template used.' },
-        { id: 'decentralized-checks', label: 'Decentralized Checks', status: 'Pending', description: 'Council vote pending.' }
-    ],
-    version: 1,
-    previousVersions: []
-  },
-  {
-    id: '4',
-    title: "Central School Heating System Upgrade",
-    type: 'Service Agreement',
-    status: 'Completed',
-    value: 450000,
-    startDate: "2025-06-01",
-    endDate: "2025-08-31",
-    clauses: ["warranty 5 years", "performance guarantee", "standard format", "safety compliance"],
-    riskAnalysis: {
-        score: 15,
-        reasons: ["Tight timeline (Summer break)"],
-        aiAnalysis: "Low financial risk, but operational timeline is critical for school opening. Performance guarantees are robust."
-    },
-    auditLog: [
-        { id: 'log-1', date: '2025-04-01 11:00', action: 'Contract Signed', user: 'Education Dept', version: 1 },
-        { id: 'log-2', date: '2025-09-01 09:00', action: 'Project Completed', user: 'System', details: 'Marked as completed on time.', version: 1 }
-    ],
-    policyChecks: [
-        { id: 'pol-1', policyName: 'Delegation of Authority', status: 'compliant', details: 'Approved by School Board.' },
-        { id: 'pol-2', policyName: 'Safety Standards', status: 'compliant', details: 'Safety compliance clauses present.' }
-    ],
-    decentralizationSteps: [
-        { id: 'good-data', label: 'Good Data', status: 'Pass', description: 'All metadata verified.' },
-        { id: 'early-warnings', label: 'Early Warnings', status: 'Pass', description: 'No alerts.' },
-        { id: 'portable-clarity', label: 'Portable Clarity', status: 'Pass', description: 'Standard format used.' },
-        { id: 'decentralized-checks', label: 'Decentralized Checks', status: 'Pass', description: 'Final inspection passed.' }
-    ],
-    version: 1,
-    previousVersions: []
-  },
-  {
-    id: '5',
-    title: "Acquisition of 10 Electric Trolleybuses",
-    type: 'PO',
-    status: 'Legal Review',
-    value: 5500000,
-    startDate: "2025-10-01",
-    endDate: "2026-10-01",
-    clauses: ["international shipping", "customs duties", "manual modifications", "no termination clause"],
-    riskAnalysis: {
-        score: 65,
-        reasons: ["High contract value", "Manual contract edits detected", "Missing termination clause"],
-        aiAnalysis: "High risk acquisition. Manual edits to standard PO for high value requires deep legal review. Termination clauses missing."
-    },
-    auditLog: [
-        { id: 'log-1', date: '2025-09-01 14:00', action: 'Contract Drafted', user: 'Transport Dept', version: 1 },
-        { id: 'log-2', date: '2025-09-01 14:05', action: 'Early Risk Check', user: 'RiskEngine', details: 'Risk Score: 65 (High)', version: 1 }
-    ],
-    policyChecks: [
-        { id: 'pol-1', policyName: 'Delegation of Authority', status: 'warning', details: 'Value > $5M requires Mayor approval.' },
-        { id: 'pol-2', policyName: 'Sustainability Goals', status: 'compliant', details: 'Electric vehicles align with green policy.' }
-    ],
-    decentralizationSteps: [
-        { id: 'good-data', label: 'Good Data', status: 'Pass', description: 'Data complete.' },
-        { id: 'early-warnings', label: 'Early Warnings', status: 'Flagged', description: 'High financial risk signal.' },
-        { id: 'portable-clarity', label: 'Portable Clarity', status: 'Flagged', description: 'Manual edits to PO template.' },
-        { id: 'decentralized-checks', label: 'Decentralized Checks', status: 'Flagged', description: 'Legal review blockers identified.' }
-    ],
-    version: 1,
-    previousVersions: []
-  }
-];
+import type { SystemRisk } from './types';
+import { loadContracts, loadSystemRisks } from './services/api';
 
 const CONTRACT_TYPES: ContractType[] = ['SOW', 'PO', 'MSA', 'NDA', 'Licensing', 'Service Agreement', 'TPH'];
 const CONTRACT_STATUSES: ContractStatus[] = ['Draft', 'Legal Review', 'Pending Approval', 'Active', 'Completed', 'Terminated'];
@@ -177,9 +20,37 @@ const CONTRACT_STATUSES: ContractStatus[] = ['Draft', 'Legal Review', 'Pending A
 type SortKey = keyof Contract | 'riskScore';
 type RiskFilter = 'all' | 'low' | 'medium' | 'high';
 
+// Loads the seed data from the API first, then shows the app.
 export default function App() {
+  const [data, setData] = useState<{ contracts: Contract[]; systemRisks: SystemRisk[] } | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    Promise.all([loadContracts(), loadSystemRisks()])
+      .then(([contracts, systemRisks]) => setData({ contracts, systemRisks }))
+      .catch((err: unknown) => setError(err instanceof Error ? err.message : String(err)));
+  }, []);
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-6 text-center text-slate-700">
+        Could not load data from the RiGoPA API. {error}
+      </div>
+    );
+  }
+  if (!data) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-slate-500 animate-pulse">
+        Loading RiGoPA...
+      </div>
+    );
+  }
+  return <Portal initialContracts={data.contracts} systemRisks={data.systemRisks} />;
+}
+
+function Portal({ initialContracts, systemRisks }: { initialContracts: Contract[]; systemRisks: SystemRisk[] }) {
   const [view, setView] = useState<'dashboard' | 'form' | 'system-risks' | 'decentralization' | 'civic-tech'>('dashboard');
-  const [contracts, setContracts] = useState<Contract[]>(INITIAL_DATA);
+  const [contracts, setContracts] = useState<Contract[]>(initialContracts);
   const [selectedContract, setSelectedContract] = useState<Contract | null>(null);
   
   // State for version viewing
@@ -199,13 +70,13 @@ export default function App() {
   const [typeFilter, setTypeFilter] = useState<ContractType | 'all'>('all');
   const [statusFilter, setStatusFilter] = useState<ContractStatus | 'all'>('all');
 
-  // Load data from local storage on mount
+  // Load data from local storage on mount (edits made in this browser win over the API seed)
   useEffect(() => {
     const stored = localStorage.getItem('rigopa_contracts_v5'); // Incremented version key
     if (stored) {
       setContracts(JSON.parse(stored));
     } else {
-        localStorage.setItem('rigopa_contracts_v5', JSON.stringify(INITIAL_DATA));
+        localStorage.setItem('rigopa_contracts_v5', JSON.stringify(initialContracts));
     }
   }, []);
 
@@ -700,7 +571,7 @@ export default function App() {
 
         <div className="p-8">
             {view === 'civic-tech' && <CivicTechDashboard contracts={contracts} />}
-            {view === 'system-risks' && <ProjectRiskDashboard />}
+            {view === 'system-risks' && <ProjectRiskDashboard risks={systemRisks} />}
             {view === 'decentralization' && <DecentralizationFormula />}
 
             {view === 'form' && (
